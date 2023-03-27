@@ -1,12 +1,13 @@
 import Head from "next/head";
-import { useState } from "react";
+
+import { FormEvent, useState } from "react";
 import styles from "./index.module.css";
 
 export default function Home() {
   const [animalInput, setAnimalInput] = useState("");
   const [result, setResult] = useState();
 
-  async function onSubmit(event) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault();
     try {
       const response = await fetch("/api/generate", {
@@ -24,10 +25,10 @@ export default function Home() {
 
       setResult(data.result);
       setAnimalInput("");
-    } catch(error) {
+    } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);
-      alert(error.message);
+      alert((error as Error).message);
     }
   }
 
