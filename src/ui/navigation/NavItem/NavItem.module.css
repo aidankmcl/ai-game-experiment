@@ -1,0 +1,17 @@
+.barContainer {
+   flex-grow: 1;
+}
+
+.bar {
+    width: 0;
+    height: 2px;
+    display: inline-block;
+    transition: width 0.3s ease-in-out;
+    margin-right: -12px;
+    margin-left: 14px;
+    border-radius: 1px;
+}
+
+.parent:hover .bar, .parent.active .bar {
+    width: 100%;
+}

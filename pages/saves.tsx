@@ -12,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/dog.png" />
       </Head>
 
-      <SendPrompt />
+      Saves
     </Content>
   );
 }

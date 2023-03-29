@@ -1,10 +1,11 @@
 import Head from "next/head";
 
-import { ListUsers, SendPrompt, AddUser } from "src/components";
+import { ListUsers, AddUser } from "src/components";
 
 import { Content } from "~/ui";
 
-export default function Home() {
+export default () => {
+
   return (
     <Content>
       <Head>
@@ -12,7 +13,8 @@ export default function Home() {
         <link rel="icon" href="/dog.png" />
       </Head>
 
-      <SendPrompt />
+      <AddUser />
+      <ListUsers />
     </Content>
   );
 }

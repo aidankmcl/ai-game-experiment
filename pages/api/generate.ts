@@ -1,69 +1,30 @@
-import { NextApiHandler } from "next";
-import { Configuration, OpenAIApi } from "openai";
-import type { AxiosError } from "axios";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+import { OpenAI } from "src/openai";
+import { APIResponse } from "src/types";
+import { handleOpenAIError, OpenAIError, createValidator, inferShape } from "src/validation";
 
-const generate: NextApiHandler = async (req, res) => {
-  if (!configuration.apiKey) {
-    res.status(500).json({
-      error: {
-        message: "OpenAI API key not configured, please follow instructions in README.md",
-      }
-    });
-    return;
-  }
+const openaiAPI = new OpenAI();
 
-  const animal = req.body.animal || '';
-  if (animal.trim().length === 0) {
-    res.status(400).json({
-      error: {
-        message: "Please enter a valid animal",
-      }
-    });
-    return;
-  }
+const [Body, handleValidationError, ValidationError] = createValidator((z) => z.object({
+  prompt: z.string().min(2)
+}));
 
+export type GenerateBody = inferShape<typeof Body>;
+export type GenerateRes = APIResponse<string>;
+
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(animal),
-      temperature: 0.6,
-    });
-    res.status(200).json({ result: completion.data.choices[0].text });
-  } catch (err) {
-    const error = err as AxiosError;
+    const { prompt } = Body.parse(req.body);
+    const response = await openaiAPI.answer(prompt);
 
-    // Consider adjusting the error handling logic for your use case
-    if (error.response) {
-      console.error(error.response.status, error.response.data);
-      res.status(error.response.status).json(error.response.data);
-    } else {
-      console.error(`Error with OpenAI API request: ${error.message}`);
-      res.status(500).json({
-        error: {
-          message: 'An error occurred during your request.',
-        }
-      });
+    res.status(200).json({ data: response || "No text returned" });
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      return handleValidationError(res, err);
+    } else if (err instanceof OpenAIError) {
+      return handleOpenAIError(res, err);
     }
   }
 }
-
-const generatePrompt = (animal: string) => {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
-
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
-
-}
-
-export default generate
