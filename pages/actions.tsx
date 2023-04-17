@@ -1,10 +1,21 @@
 import Head from "next/head";
 
-import { ListUsers, SendPrompt, AddUser } from "src/components";
+import { getAllActions } from "~/client-api";
+import { useAsync } from "~/hooks";
 
 import { Content } from "~/ui";
+import { useEffect } from "react";
+import { useAppSelector } from "src/hooks/useGlobalState";
+import { identitySelectors } from "~/state";
 
-export default function Home() {
+export default () => {
+  const [data, trigger] = useAsync(getAllActions);
+  const saveID = useAppSelector(identitySelectors.selectSaveID)
+
+  useEffect(() => {
+    if (saveID) trigger(saveID);
+  }, []);
+
   return (
     <Content>
       <Head>
@@ -12,7 +23,7 @@ export default function Home() {
         <link rel="icon" href="/dog.png" />
       </Head>
 
-      Actions
+      {<p>{data ? JSON.stringify(data, null, 2) : 'No saves available'}</p>}
     </Content>
   );
 }

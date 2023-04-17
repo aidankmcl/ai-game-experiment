@@ -1,10 +1,10 @@
-import { CreateUserBody, CreateUserRes, GetUsersRes } from "pages/api/users";
-import { GetUserRes, DeleteUserRes } from "pages/api/users/[userID]";
+import { CreateSaveBody, CreateSaveRes, GetSavesRes } from "pages/api/saves";
+import { GetSaveRes, DeleteSaveRes } from "pages/api/saves/[saveID]";
 
 import { ClientsideResponse } from 'src/types';
 
-export const createUser = async (input: CreateUserBody): ClientsideResponse<CreateUserRes> => {
-  const response = await fetch(`/api/users`, {
+export const createSave = async (input: CreateSaveBody): ClientsideResponse<CreateSaveRes> => {
+  const response = await fetch(`/api/saves`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input)
@@ -18,8 +18,8 @@ export const createUser = async (input: CreateUserBody): ClientsideResponse<Crea
   return res.data;
 }
 
-export const getUser = async (id: string | number): ClientsideResponse<GetUserRes> => {
-  const response = await fetch(`/api/users/${id}`, {
+export const getSave = async (id: string | number): ClientsideResponse<GetSaveRes> => {
+  const response = await fetch(`/api/saves/${id}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -32,8 +32,10 @@ export const getUser = async (id: string | number): ClientsideResponse<GetUserRe
   return res.data;
 }
 
-export const getAllUsers = async (): ClientsideResponse<GetUsersRes> => {
-  const response = await fetch(`/api/users`, {
+export const getAllSaves = async (userID?: string | number): ClientsideResponse<GetSavesRes> => {
+  const url = userID ? `/api/saves?user=${userID}` : '/api/saves';
+
+  const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -46,8 +48,8 @@ export const getAllUsers = async (): ClientsideResponse<GetUsersRes> => {
   return res.data;
 }
 
-export const deleteUser = async (id: string | number): ClientsideResponse<DeleteUserRes> => {
-  const response = await fetch(`/api/users/${id}`, {
+export const deleteSave = async (id: string | number): ClientsideResponse<DeleteSaveRes> => {
+  const response = await fetch(`/api/saves/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   });

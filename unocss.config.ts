@@ -29,13 +29,12 @@ export default defineConfig({
 
       return `
         ${sel} {
-          margin: ${size}px;
           box-shadow: ${size}px ${size}px 0px 0px ${theme.colors.purple};
           transition: all 0.1s linear;
         }
 
         ${sel}:hover {
-          box-shadow: 0px 0px 0px ${size / 2}px ${theme.colors.purple};
+          box-shadow: 0px 0px 0px ${size}px ${theme.colors.purple};
         }
       `;
     }]

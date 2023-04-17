@@ -1,10 +1,10 @@
-import { FC, HTMLAttributes } from "react";
+import { FC } from "react";
 
 import { Sidebar } from '~/ui';
 
 import styles from './Content.module.css';
 
-type Props = HTMLAttributes<'div'>;
+type Props = JSX.IntrinsicElements['div'];
 
 export const Content: FC<Props> = (props) => {
   return <main className={`${styles.main} h-full relative`}>

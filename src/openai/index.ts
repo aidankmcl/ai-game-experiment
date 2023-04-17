@@ -1,8 +1,6 @@
 
 import { Configuration, OpenAIApi } from "openai";
 
-import { generateAnimalPrompt } from "./prompts";
-
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -15,7 +13,7 @@ export class OpenAI {
       model: "gpt-3.5-turbo",
       messages: [
         { role: 'system', content: 'You are a dungeon master for a video game with an auto-generated plot' },
-        { role: 'user', content: generateAnimalPrompt(text) }
+        { role: 'user', content: text }
       ],
       temperature: 0.6,
     });
@@ -26,3 +24,5 @@ export class OpenAI {
     return result;
   }
 }
+
+export * from './prompts';

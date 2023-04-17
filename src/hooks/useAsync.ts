@@ -22,10 +22,10 @@ export const useAsync = <Result, Args extends unknown[] = unknown[]>(
       setLoading(false);
       setErr(null);
     } catch (error) {
-      console.error('Error in useAsync:', error);
+      const err = error as Error;
       setData(undefined);
       setLoading(false);
-      if (error instanceof Error) setErr(error);
+      if (err.message) setErr(err);
     }
   };
 

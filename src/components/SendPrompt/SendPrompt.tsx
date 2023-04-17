@@ -1,40 +1,49 @@
-import { FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 
-import { sendPrompt } from "src/client-api";
+import { sendPrompt } from "~/client-api";
+import { useAppSelector } from "~/hooks";
+import { identitySelectors, actionsSelectors } from "~/state";
 
 import styles from './SendPrompt.module.css';
 
-export const SendPrompt = () => {
-  const [prompt, setPromptInput] = useState("");
-  const [result, setResult] = useState("");
+type Props = {
+  callback?: (response: string) => void;
+}
 
-  async function onSubmit(event: FormEvent) {
+export const SendPrompt: FC<Props> = (props) => {
+  const [prompt, setPromptInput] = useState("");
+  const [loading, setPromptRequestLoading] = useState(false);
+
+  const saveID = useAppSelector(identitySelectors.selectSaveID);
+  const actions = useAppSelector(actionsSelectors.getPreviousActions);
+
+  const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setPromptRequestLoading(true);
 
     try {
-      const data = await sendPrompt({ prompt });
+      if (!saveID) throw new Error("need to have active save when generating");
+      const data = await sendPrompt({ prompt, saveID, previousActions: actions });
 
-      setResult(data);
+      if (props.callback) props.callback(data);
       setPromptInput("");
     } catch (error) {
       console.error(error);
     }
+    setPromptRequestLoading(false);
   }
 
   return <div>
-    <img src="/dog.png" className={styles.icon} />
-    <h3 className={styles.title}>Name my pet</h3>
-    <form className={styles.form} onSubmit={onSubmit}>
+    <form className={`${styles.form} mt-5`} onSubmit={onSubmit}>
       <input
         className={styles.input}
         type="text"
-        name="animal"
-        placeholder="Enter an animal"
+        name="next-action"
+        placeholder="Enter your next step"
         value={prompt}
         onChange={(e) => setPromptInput(e.target.value)}
       />
-      <input className={styles.input} type="submit" value="Generate names" />
+      <input className={styles.input} type="submit" value="Submit" disabled={loading} />
     </form>
-    {result && <div className={styles.result}>{result}</div>}
   </div>
 }

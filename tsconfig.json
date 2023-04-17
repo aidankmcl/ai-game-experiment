@@ -27,7 +27,8 @@
       "~/components": ["src/components"],
       "~/types": ["src/types"],
       "~/ui": ["src/ui"],
-      "~/hooks": ["src/hooks"]
+      "~/hooks": ["src/hooks"],
+      "~/state": ["src/state"],
     }
   },
   "include": [

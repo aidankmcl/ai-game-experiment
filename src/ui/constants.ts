@@ -12,9 +12,7 @@ type LinkData = {
 const navLinks: LinkData[] = [
   { href: '', text: 'Play' },
   { href: 'users', text: 'Users' },
-  { href: 'playthroughs', text: 'Playthroughs' },
   { href: 'actions', text: 'Actions' },
-  { href: 'summaries', text: 'Summaries' },
   { href: 'saves', text: 'Saves' }
 ];
 
